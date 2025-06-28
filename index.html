@@ -12,19 +12,30 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
+    <!-- Favicon link: Replace 'favicon.ico' and 'favicon.png' with your actual favicon files -->
+    <link rel="icon" href="/IMG_8358.PNG" type="image/x-icon" />
+    <link rel="shortcut icon" href="/IMG_8358.PNG" type="image/png" />
+
     <style>
       :root {
         --bg-dark: #010206;
         --accent-primary: #3b82f6;
         --accent-secondary: #06b6d4;
       }
-      /* Increased base font size for better readability */
+      /* Increased base font size for better readability and refined typography */
       body {
         font-family: "Inter", sans-serif;
         background-color: var(--bg-dark);
         color: #e2e8f0;
         overflow-x: hidden;
-        font-size: 1.1rem; /* Base font size increased */
+        font-size: 1.15rem; /* Slightly increased base font size */
+        line-height: 1.7; /* Improved line height for readability */
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        line-height: 1.2; /* Tighter line height for headings */
       }
       .content-wrapper {
         position: relative;
@@ -89,16 +100,16 @@
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 1.5rem;
         padding: 2.5rem; /* Increased padding */
-        transition: all 0.4s ease;
+        transition: all 0.5s ease-in-out; /* Smoother transition */
         position: relative;
         box-shadow: 0 0 0 rgba(59, 130, 246, 0);
       }
       .glass-card:hover {
-        transform: translateY(-8px);
+        transform: translateY(-10px); /* More pronounced lift */
         background: rgba(10, 15, 30, 0.5);
         border-color: rgba(59, 130, 246, 0.4);
-        box-shadow: 0 0 80px rgba(59, 130, 246, 0.15),
-          inset 0 0 20px rgba(59, 130, 246, 0.1);
+        box-shadow: 0 15px 100px rgba(59, 130, 246, 0.2),
+          /* Enhanced shadow */ inset 0 0 30px rgba(59, 130, 246, 0.15);
       }
 
       .glass-button {
@@ -106,11 +117,12 @@
         backdrop-filter: blur(10px);
         border: 1px solid rgba(59, 130, 246, 0.4);
         box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Custom easing for smoother button transition */
       }
       .glass-button:hover {
         background: rgba(59, 130, 246, 0.3);
-        box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+        box-shadow: 0 0 60px rgba(59, 130, 246, 0.4); /* Stronger glow on hover */
+        transform: translateY(-3px); /* Subtle lift on hover */
       }
 
       #hero-3d-canvas {
@@ -126,8 +138,8 @@
 
       .reveal {
         opacity: 0;
-        transform: translateY(40px);
-        transition: opacity 1s ease, transform 1s ease;
+        transform: translateY(50px); /* Increased initial translateY */
+        transition: opacity 1.2s ease-out, transform 1.2s ease-out; /* Slower and smoother transition */
       }
       .reveal.visible {
         opacity: 1;
@@ -141,43 +153,57 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8); /* Darker overlay */
         display: flex;
         align-items: center;
         justify-content: center;
         z-index: 1000;
         opacity: 0;
         pointer-events: none;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.4s ease-in-out; /* Smoother overlay transition */
       }
       .modal-overlay.visible {
         opacity: 1;
         pointer-events: auto;
       }
       .modal-content {
-        transform: scale(0.9);
-        transition: transform 0.3s ease;
+        transform: scale(0.8); /* Smaller initial scale */
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy transition */
       }
       .modal-overlay.visible .modal-content {
         transform: scale(1);
       }
+      /* Ensure responsive padding for containers */
+      .container {
+        padding-left: 1.5rem; /* px-6 */
+        padding-right: 1.5rem; /* px-6 */
+        max-width: 1280px; /* Max width for larger screens */
+      }
+      @media (min-width: 768px) {
+        .container {
+          padding-left: 2.5rem; /* md:px-10 */
+          padding-right: 2.5rem; /* md:px-10 */
+        }
+      }
     </style>
   </head>
   <body class="antialiased">
+    <!-- Aurora background for subtle visual depth -->
     <div class="aurora-background">
       <div class="aurora one"></div>
       <div class="aurora two"></div>
       <div class="aurora three"></div>
     </div>
+    <!-- Three.js 3D particle canvas -->
     <div id="hero-3d-canvas"></div>
 
     <div class="content-wrapper">
-      <!-- Navigation -->
+      <!-- Navigation Header -->
       <header
-        class="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-sm border-b border-white/10"
+        class="fixed top-0 left-0 right-0 z-50 bg-black/15 backdrop-blur-md border-b border-white/10"
       >
         <div
-          class="container mx-auto px-6 py-3 flex justify-between items-center"
+          class="container mx-auto px-6 py-4 flex justify-between items-center"
         >
           <a href="#" class="flex items-center text-white">
             <img
@@ -187,7 +213,7 @@
               onerror="this.onerror=null;this.src='https://placehold.co/160x40/010206/FFFFFF?text=ReVolt';"
             />
           </a>
-          <nav class="hidden md:flex items-center space-x-8">
+          <nav class="hidden md:flex items-center space-x-10">
             <!-- Increased spacing -->
             <a
               href="#capabilities"
@@ -201,7 +227,7 @@
             >
             <a
               href="https://revolt-intel.lovable.app/"
-              class="glass-button px-6 py-3 text-lg font-semibold text-white rounded-lg transition-all duration-300"
+              class="glass-button px-7 py-3.5 text-lg font-semibold text-white rounded-xl transition-all duration-300"
               id="nav-demo-button"
               >Launch Demo</a
             >
@@ -209,7 +235,7 @@
         </div>
       </header>
       <main>
-        <!-- Hero Section -->
+        <!-- Hero Section: Main landing content -->
         <section
           class="relative text-center container mx-auto px-6 py-32 md:py-48 h-[100vh] flex flex-col justify-center items-center"
         >
@@ -218,26 +244,26 @@
               The $300 Billion Battery Problem
             </p>
             <h1
-              class="text-6xl md:text-8xl font-extrabold text-white leading-tight tracking-tight mt-4 reveal"
+              class="text-6xl md:text-8xl font-extrabold text-white leading-tight tracking-tight mt-6 reveal"
               style="transition-delay: 0.1s"
             >
               The Universal Battery<span
-                class="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mt-2"
-                >Intellgience Platform.</span
+                class="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mt-4"
+                >Intelligence Platform.</span
               >
             </h1>
             <p
-              class="mt-8 max-w-4xl mx-auto text-xl md:text-2xl text-slate-300 reveal"
+              class="mt-10 max-w-4xl mx-auto text-xl md:text-2xl text-slate-300 reveal"
               style="transition-delay: 0.2s"
             >
               ReVolt is the first AI-powered platform that turns chaotic test
               data into verifiable Digital Passports—unlocking hidden value,
               reducing risk, and accelerating second-life adoption.
             </p>
-            <div class="mt-12 reveal" style="transition-delay: 0.3s">
+            <div class="mt-14 reveal" style="transition-delay: 0.3s">
               <a
                 href="https://revolt-intel.lovable.app/"
-                class="glass-button px-10 py-5 font-bold text-xl text-white rounded-xl transition-all duration-300 transform hover:scale-105 inline-block"
+                class="glass-button px-12 py-5 font-bold text-xl text-white rounded-xl inline-block"
                 id="hero-demo-button"
                 >Launch Live AI Demo &rarr;</a
               >
@@ -245,30 +271,30 @@
           </div>
         </section>
 
-        <!-- NEW: Pillars Section -->
-        <section id="pillars" class="py-24">
+        <!-- Pillars Section: Core functionalities explained -->
+        <section id="pillars" class="py-28">
           <div class="container mx-auto px-6">
             <div class="text-center max-w-4xl mx-auto">
               <h2 class="text-5xl md:text-6xl font-extrabold text-white reveal">
                 The Three Pillars of Intelligence
               </h2>
               <p
-                class="mt-6 text-xl text-slate-300 reveal"
+                class="mt-8 text-xl text-slate-300 reveal"
                 style="transition-delay: 0.1s"
               >
                 Our platform is founded on a simple, powerful, and transparent
                 workflow to deliver unparalleled clarity.
               </p>
             </div>
-            <div class="mt-20 grid md:grid-cols-3 gap-8 text-center">
+            <div class="mt-24 grid md:grid-cols-3 gap-10 text-center">
               <div class="glass-card reveal" style="transition-delay: 0.2s">
                 <div
-                  class="flex items-center justify-center w-20 h-20 rounded-2xl bg-blue-500/10 mb-8 mx-auto"
+                  class="flex items-center justify-center w-24 h-24 rounded-3xl bg-blue-500/10 mb-8 mx-auto"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="44"
+                    height="44"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -293,12 +319,12 @@
               </div>
               <div class="glass-card reveal" style="transition-delay: 0.3s">
                 <div
-                  class="flex items-center justify-center w-20 h-20 rounded-2xl bg-cyan-500/10 mb-8 mx-auto"
+                  class="flex items-center justify-center w-24 h-24 rounded-3xl bg-cyan-500/10 mb-8 mx-auto"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="44"
+                    height="44"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -324,12 +350,12 @@
               </div>
               <div class="glass-card reveal" style="transition-delay: 0.4s">
                 <div
-                  class="flex items-center justify-center w-20 h-20 rounded-2xl bg-indigo-500/10 mb-8 mx-auto"
+                  class="flex items-center justify-center w-24 h-24 rounded-3xl bg-indigo-500/10 mb-8 mx-auto"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="40"
-                    height="40"
+                    width="44"
+                    height="44"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"
@@ -355,15 +381,15 @@
           </div>
         </section>
 
-        <!-- Capabilities Section -->
-        <section id="capabilities" class="py-24 bg-black/20">
+        <!-- Capabilities Section: Detailed features -->
+        <section id="capabilities" class="py-28 bg-black/20">
           <div class="container mx-auto px-6">
             <div class="text-center max-w-4xl mx-auto">
               <h2 class="text-5xl md:text-6xl font-extrabold text-white reveal">
                 A Unified Command Center for Battery Value
               </h2>
               <p
-                class="mt-6 text-xl text-slate-300 reveal"
+                class="mt-8 text-xl text-slate-300 reveal"
                 style="transition-delay: 0.1s"
               >
                 ReVolt is more than a tool; it's an integrated platform for
@@ -371,17 +397,17 @@
                 every battery under your roof.
               </p>
             </div>
-            <div class="mt-20 max-w-6xl mx-auto">
-              <div class="grid md:grid-cols-2 gap-x-12 gap-y-10">
-                <div class="space-y-10 reveal" style="transition-delay: 0.2s">
+            <div class="mt-24 max-w-6xl mx-auto">
+              <div class="grid md:grid-cols-2 gap-x-16 gap-y-12">
+                <div class="space-y-12 reveal" style="transition-delay: 0.2s">
                   <div class="flex items-start space-x-6">
                     <div
-                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                      class="flex-shrink-0 w-18 h-18 rounded-lg bg-blue-500/10 flex items-center justify-center"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="32"
-                        height="32"
+                        width="36"
+                        height="36"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -411,12 +437,12 @@
                   </div>
                   <div class="flex items-start space-x-6">
                     <div
-                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                      class="flex-shrink-0 w-18 h-18 rounded-lg bg-blue-500/10 flex items-center justify-center"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="32"
-                        height="32"
+                        width="36"
+                        height="36"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -441,15 +467,15 @@
                     </div>
                   </div>
                 </div>
-                <div class="space-y-10 reveal" style="transition-delay: 0.3s">
+                <div class="space-y-12 reveal" style="transition-delay: 0.3s">
                   <div class="flex items-start space-x-6">
                     <div
-                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                      class="flex-shrink-0 w-18 h-18 rounded-lg bg-blue-500/10 flex items-center justify-center"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="32"
-                        height="32"
+                        width="36"
+                        height="36"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -477,12 +503,12 @@
                   </div>
                   <div class="flex items-start space-x-6">
                     <div
-                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                      class="flex-shrink-0 w-18 h-18 rounded-lg bg-blue-500/10 flex items-center justify-center"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="32"
-                        height="32"
+                        width="36"
+                        height="36"
                         viewBox="0 0 24 24"
                         fill="none"
                         stroke="currentColor"
@@ -513,7 +539,7 @@
           </div>
         </section>
 
-        <!-- Process Section -->
+        <!-- Process Section: Step-by-step workflow -->
         <section id="process" class="py-32">
           <div class="container mx-auto px-6">
             <div class="text-center max-w-4xl mx-auto">
@@ -523,21 +549,19 @@
             </div>
             <!-- Enhanced Process flow with connecting arrows -->
             <div
-              class="relative mt-24 grid md:grid-cols-3 gap-x-8 gap-y-16 text-center"
+              class="relative mt-28 grid md:grid-cols-3 gap-x-10 gap-y-16 text-center"
             >
-              <!-- Arrow 1 -->
+              <!-- Arrow 1 - SVG for visual connection -->
               <div
                 class="hidden md:block absolute top-1/2 -translate-y-1/2 left-0 w-full h-full pointer-events-none"
               >
                 <svg
                   class="absolute text-slate-700/50"
-                  style="left: 28%; top: -2.5rem"
-                  width="150"
-                  height="150"
+                  style="left: 29%; top: -3rem; width: 120px; height: 120px"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1"
+                  stroke-width="0.8"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 >
@@ -545,19 +569,17 @@
                   <path d="M6 17l5-5-5-5" />
                 </svg>
               </div>
-              <!-- Arrow 2 -->
+              <!-- Arrow 2 - SVG for visual connection -->
               <div
                 class="hidden md:block absolute top-1/2 -translate-y-1/2 left-0 w-full h-full pointer-events-none"
               >
                 <svg
                   class="absolute text-slate-700/50"
-                  style="right: 28%; top: -2.5rem"
-                  width="150"
-                  height="150"
+                  style="right: 29%; top: -3rem; width: 120px; height: 120px"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="1"
+                  stroke-width="0.8"
                   stroke-linecap="round"
                   stroke-linejoin="round"
                 >
@@ -567,10 +589,10 @@
               </div>
 
               <div
-                class="glass-card p-8 rounded-2xl reveal z-10"
+                class="glass-card p-10 rounded-2xl reveal z-10"
                 style="transition-delay: 0.2s"
               >
-                <div class="text-8xl font-black mb-6 text-blue-500/30">1</div>
+                <div class="text-9xl font-black mb-8 text-blue-500/30">1</div>
                 <h3 class="text-3xl font-bold text-white">
                   Drop Your Raw Data
                 </h3>
@@ -580,10 +602,10 @@
                 </p>
               </div>
               <div
-                class="glass-card p-8 rounded-2xl reveal z-10"
+                class="glass-card p-10 rounded-2xl reveal z-10"
                 style="transition-delay: 0.3s"
               >
-                <div class="text-8xl font-black mb-6 text-blue-500/30">2</div>
+                <div class="text-9xl font-black mb-8 text-blue-500/30">2</div>
                 <h3 class="text-3xl font-bold text-white">
                   AI Engine Analyzes
                 </h3>
@@ -593,10 +615,10 @@
                 </p>
               </div>
               <div
-                class="glass-card p-8 rounded-2xl reveal z-10"
+                class="glass-card p-10 rounded-2xl reveal z-10"
                 style="transition-delay: 0.4s"
               >
-                <div class="text-8xl font-black mb-6 text-blue-500/30">3</div>
+                <div class="text-9xl font-black mb-8 text-blue-500/30">3</div>
                 <h3 class="text-3xl font-bold text-white">
                   Generate Digital Passport
                 </h3>
@@ -609,23 +631,23 @@
           </div>
         </section>
 
-        <!-- CTA Section -->
+        <!-- CTA Section: Call to action for demo -->
         <section id="demo-cta" class="py-24">
           <div class="container mx-auto px-6 text-center">
             <div
-              class="relative max-w-4xl mx-auto glass-card p-12 md:p-20 reveal"
+              class="relative max-w-4xl mx-auto glass-card p-16 md:p-24 reveal"
             >
               <h2 class="text-5xl md:text-6xl font-extrabold text-white">
                 Experience ReVolt Live
               </h2>
-              <p class="mt-6 max-w-2xl mx-auto text-xl text-slate-300">
+              <p class="mt-8 max-w-2xl mx-auto text-xl text-slate-300">
                 Stop managing spreadsheets. Start creating value. See how ReVolt
                 can transform your operations in a live, interactive demo.
               </p>
-              <div class="mt-10">
+              <div class="mt-12">
                 <button
                   id="final-cta-button"
-                  class="glass-button px-10 py-5 font-bold text-xl text-white rounded-xl transition-all duration-300 transform hover:scale-105 inline-block"
+                  class="glass-button px-12 py-5 font-bold text-xl text-white rounded-xl inline-block"
                 >
                   Launch Free AI Demo
                 </button>
@@ -635,16 +657,24 @@
         </section>
       </main>
 
-      <footer class="py-12 border-t border-white/10 mt-16">
+      <!-- Footer -->
+      <footer class="py-16 border-t border-white/10 mt-20">
         <div
-          class="container mx-auto px-6 text-center text-slate-500 text-base"
+          class="container mx-auto px-6 text-center text-slate-500 text-base flex flex-col items-center space-y-6"
         >
-          <p>&copy; 2024 ReVolt Systems Inc. All rights reserved.</p>
+          <!-- Added logo to footer -->
+          <img
+            src="/IMG_8358-removebg-preview.png"
+            alt="ReVolt Logo"
+            class="h-24 w-auto mb-4"
+            onerror="this.onerror=null;this.src='https://placehold.co/160x40/010206/FFFFFF?text=ReVolt';"
+          />
+          <p class="text-lg">&copy; 2025 ReVolt AI Inc. All rights reserved.</p>
         </div>
       </footer>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal for Demo Launch confirmation -->
     <div id="demo-modal" class="modal-overlay">
       <div class="modal-content glass-card max-w-lg w-full m-4 text-center">
         <h3 class="text-3xl font-bold text-white">ReVolt AI Demo</h3>
@@ -671,40 +701,58 @@
     </div>
 
     <script>
+      // Global variables for Three.js scene
       let scene, camera, renderer, particles;
 
+      /**
+       * Initializes the Three.js 3D background with animated particles.
+       */
       function init3D() {
         const container = document.getElementById("hero-3d-canvas");
-        if (!container || !window.THREE) return;
+        // Ensure container and Three.js library are available
+        if (!container || !window.THREE) {
+          console.warn(
+            "Three.js container or library not found. 3D background will not render."
+          );
+          return;
+        }
 
+        // Scene setup
         scene = new THREE.Scene();
+        // Camera setup: PerspectiveCamera(FOV, Aspect Ratio, Near Clip, Far Clip)
         camera = new THREE.PerspectiveCamera(
-          75,
-          window.innerWidth / window.innerHeight,
-          1,
-          3000
+          75, // Field of view
+          window.innerWidth / window.innerHeight, // Aspect ratio
+          1, // Near clipping plane
+          3000 // Far clipping plane
         );
-        camera.position.z = 800;
+        camera.position.z = 800; // Position the camera back to see particles
 
-        const numParticles = 15000;
-        const positions = new Float32Array(numParticles * 3);
-        const colors = new Float32Array(numParticles * 3);
-        const sizes = new Float32Array(numParticles);
+        // Particle System creation
+        const numParticles = 20000; // Increased number of particles for denser effect
+        const positions = new Float32Array(numParticles * 3); // x, y, z for each particle
+        const colors = new Float32Array(numParticles * 3); // r, g, b for each particle
+        const sizes = new Float32Array(numParticles); // Size for each particle
         const color = new THREE.Color();
 
+        // Populate particle data (random positions, colors, and sizes)
         for (let i = 0; i < positions.length; i += 3) {
-          positions[i] = (Math.random() - 0.5) * 2000;
-          positions[i + 1] = (Math.random() - 0.5) * 2000;
-          positions[i + 2] = (Math.random() - 0.5) * 2000;
+          positions[i] = (Math.random() - 0.5) * 2500; // X position, spread wider
+          positions[i + 1] = (Math.random() - 0.5) * 2500; // Y position, spread wider
+          positions[i + 2] = (Math.random() - 0.5) * 2500; // Z position, spread deeper
+
+          // Create a gradient of colors from primary to secondary accent
           const mixedColor = color
-            .set(0x3b82f6)
-            .lerp(new THREE.Color(0x06b6d4), Math.random());
+            .set(0x3b82f6) // Accent primary color
+            .lerp(new THREE.Color(0x06b6d4), Math.random()); // Interpolate with accent secondary
           colors[i] = mixedColor.r;
           colors[i + 1] = mixedColor.g;
           colors[i + 2] = mixedColor.b;
-          sizes[i / 3] = Math.random() * 5 + 2;
+
+          sizes[i / 3] = Math.random() * 6 + 2; // Random size between 2 and 8
         }
 
+        // Create BufferGeometry and set attributes
         const geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
           "position",
@@ -716,8 +764,10 @@
         );
         geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
+        // ShaderMaterial for custom particle rendering (gives glow effect)
         const material = new THREE.ShaderMaterial({
           uniforms: {
+            // Load a texture for the particle points (e.g., a soft circle or spark)
             pointTexture: {
               value: new THREE.TextureLoader().load(
                 "https://threejs.org/examples/textures/sprites/spark1.png"
@@ -729,71 +779,87 @@
             attribute vec3 customColor;
             varying vec3 vColor;
             void main() {
-              vColor = customColor;
+              vColor = customColor; // Pass color to fragment shader
               vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
-              gl_PointSize = size * ( 300.0 / -mvPosition.z );
-              gl_Position = projectionMatrix * mvPosition;
+              gl_PointSize = size * ( 300.0 / -mvPosition.z ); // Scale point size based on depth
+              gl_Position = projectionMatrix * mvPosition; // Project vertex to screen
             }`,
           fragmentShader: `
             varying vec3 vColor;
-            uniform sampler2D pointTexture;
+            uniform sampler2D pointTexture; // Texture for the point
             void main() {
-              gl_FragColor = vec4( vColor, 1.0 );
+              gl_FragColor = vec4( vColor, 1.0 ); // Base color from vertex shader
+              // Multiply with texture to create a soft, glowing point
               gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
             }`,
-          blending: THREE.AdditiveBlending,
-          depthTest: false,
-          transparent: true,
+          blending: THREE.AdditiveBlending, // Additive blending for glow effect
+          depthTest: false, // Disable depth testing for particles to always be visible
+          transparent: true, // Enable transparency for the texture
         });
 
         particles = new THREE.Points(geometry, material);
         scene.add(particles);
 
+        // Renderer setup
         renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        container.appendChild(renderer.domElement);
+        renderer.setPixelRatio(window.devicePixelRatio); // Use device pixel ratio for sharp rendering
+        renderer.setSize(window.innerWidth, window.innerHeight); // Set renderer size to full window
+        container.appendChild(renderer.domElement); // Add renderer's canvas to the DOM
+
+        // Event listener for window resizing
         window.addEventListener("resize", onWindowResize, false);
       }
 
+      /**
+       * Handles window resize events to update camera aspect ratio and renderer size.
+       */
       function onWindowResize() {
         if (!camera || !renderer) return;
         camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.updateProjectionMatrix(); // Update camera projection matrix
+        renderer.setSize(window.innerWidth, window.innerHeight); // Update renderer size
       }
 
+      /**
+       * Animation loop for the Three.js scene.
+       */
       function animate() {
-        requestAnimationFrame(animate);
-        if (renderer && scene && camera) render();
+        requestAnimationFrame(animate); // Request next animation frame
+        if (renderer && scene && camera) render(); // Only render if components are initialized
       }
 
+      /**
+       * Renders the Three.js scene.
+       */
       function render() {
-        const time = Date.now() * 0.0001;
+        const time = Date.now() * 0.0001; // Time for animation
         if (particles) {
-          particles.rotation.y = time * 0.2;
-          particles.rotation.x = time * 0.1;
+          particles.rotation.y = time * 0.2; // Rotate particles around Y axis
+          particles.rotation.x = time * 0.1; // Rotate particles around X axis
         }
-        renderer.render(scene, camera);
+        renderer.render(scene, camera); // Render the scene with the camera
       }
 
+      // Intersection Observer for "reveal" animations
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-              observer.unobserve(entry.target);
+              entry.target.classList.add("visible"); // Add 'visible' class when element enters viewport
+              observer.unobserve(entry.target); // Stop observing once animated
             }
           });
         },
-        { threshold: 0.1 }
+        { threshold: 0.1 } // Trigger when 10% of element is visible
       );
+      // Observe all elements with the 'reveal' class
       document
         .querySelectorAll(".reveal")
         .forEach((el) => observer.observe(el));
 
       // --- Modal Logic ---
       const modal = document.getElementById("demo-modal");
+      // Get all buttons that should open the modal
       const openModalButtons = [
         document.getElementById("nav-demo-button"),
         document.getElementById("hero-demo-button"),
@@ -801,33 +867,42 @@
       ];
       const closeModalButton = document.getElementById("close-modal-button");
 
+      /**
+       * Opens the demo modal.
+       * @param {Event} e - The event object.
+       */
       const openModal = (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Prevent default link behavior
         modal.classList.add("visible");
       };
 
+      /**
+       * Closes the demo modal.
+       */
       const closeModal = () => {
         modal.classList.remove("visible");
       };
 
+      // Attach event listeners to open modal buttons
       openModalButtons.forEach((btn) =>
         btn.addEventListener("click", openModal)
       );
+      // Attach event listener to close modal button
       closeModalButton.addEventListener("click", closeModal);
-      // Close modal by clicking the overlay
+      // Close modal by clicking the overlay itself
       modal.addEventListener("click", (e) => {
         if (e.target === modal) {
           closeModal();
         }
       });
 
-      // Initialize 3D scene and start animation
+      // Initialize 3D scene and start animation after DOM is fully loaded
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", init3D);
       } else {
-        init3D();
+        init3D(); // If DOM is already loaded, initialize immediately
       }
-      animate();
+      animate(); // Start the animation loop
     </script>
   </body>
 </html>
