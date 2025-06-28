@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ReVolt | The Universal Battery Intelligence Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-dark: #010206;
+        --accent-primary: #3b82f6;
+        --accent-secondary: #06b6d4;
+      }
+      /* Increased base font size for better readability */
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--bg-dark);
+        color: #e2e8f0;
+        overflow-x: hidden;
+        font-size: 1.1rem; /* Base font size increased */
+      }
+      .content-wrapper {
+        position: relative;
+        z-index: 10;
+      }
+
+      .aurora-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+      .aurora-background .aurora {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(150px);
+        opacity: 0.15;
+        animation: drift 50s infinite linear alternate;
+      }
+      .aurora.one {
+        width: 800px;
+        height: 800px;
+        background: var(--accent-primary);
+        top: -350px;
+        left: -350px;
+      }
+      .aurora.two {
+        width: 700px;
+        height: 700px;
+        background: #4f46e5;
+        bottom: -250px;
+        right: -450px;
+        animation-direction: alternate-reverse;
+        animation-duration: 40s;
+      }
+      .aurora.three {
+        width: 600px;
+        height: 600px;
+        background: var(--accent-secondary);
+        bottom: 50px;
+        left: -450px;
+        animation-duration: 55s;
+      }
+
+      @keyframes drift {
+        0% {
+          transform: translate(0, 0) rotate(0deg) scale(1);
+        }
+        100% {
+          transform: translate(100px, 150px) rotate(25deg) scale(1.25);
+        }
+      }
+
+      .glass-card {
+        background: rgba(10, 15, 30, 0.3);
+        backdrop-filter: blur(32px);
+        -webkit-backdrop-filter: blur(32px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.5rem;
+        padding: 2.5rem; /* Increased padding */
+        transition: all 0.4s ease;
+        position: relative;
+        box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+      }
+      .glass-card:hover {
+        transform: translateY(-8px);
+        background: rgba(10, 15, 30, 0.5);
+        border-color: rgba(59, 130, 246, 0.4);
+        box-shadow: 0 0 80px rgba(59, 130, 246, 0.15),
+          inset 0 0 20px rgba(59, 130, 246, 0.1);
+      }
+
+      .glass-button {
+        background: rgba(59, 130, 246, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(59, 130, 246, 0.4);
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+        transition: all 0.3s ease;
+      }
+      .glass-button:hover {
+        background: rgba(59, 130, 246, 0.3);
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.3);
+      }
+
+      #hero-3d-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        opacity: 0.8;
+        pointer-events: none;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: opacity 1s ease, transform 1s ease;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Modal Styles */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+      .modal-overlay.visible {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .modal-content {
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+      }
+      .modal-overlay.visible .modal-content {
+        transform: scale(1);
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="aurora-background">
+      <div class="aurora one"></div>
+      <div class="aurora two"></div>
+      <div class="aurora three"></div>
+    </div>
+    <div id="hero-3d-canvas"></div>
+
+    <div class="content-wrapper">
+      <!-- Navigation -->
+      <header
+        class="fixed top-0 left-0 right-0 z-50 bg-black/10 backdrop-blur-sm border-b border-white/10"
+      >
+        <div
+          class="container mx-auto px-6 py-3 flex justify-between items-center"
+        >
+          <a href="#" class="flex items-center text-white">
+            <img
+              src="/IMG_8358-removebg-preview.png"
+              alt="ReVolt Logo"
+              class="h-20 w-auto"
+              onerror="this.onerror=null;this.src='https://placehold.co/160x40/010206/FFFFFF?text=ReVolt';"
+            />
+          </a>
+          <nav class="hidden md:flex items-center space-x-8">
+            <!-- Increased spacing -->
+            <a
+              href="#capabilities"
+              class="text-lg text-slate-300 hover:text-white transition-colors duration-300"
+              >Capabilities</a
+            >
+            <a
+              href="#process"
+              class="text-lg text-slate-300 hover:text-white transition-colors duration-300"
+              >Process</a
+            >
+            <a
+              href="https://revolt-intel.lovable.app/"
+              class="glass-button px-6 py-3 text-lg font-semibold text-white rounded-lg transition-all duration-300"
+              id="nav-demo-button"
+              >Launch Demo</a
+            >
+          </nav>
+        </div>
+      </header>
+      <main>
+        <!-- Hero Section -->
+        <section
+          class="relative text-center container mx-auto px-6 py-32 md:py-48 h-[100vh] flex flex-col justify-center items-center"
+        >
+          <div class="relative z-10">
+            <p class="text-xl text-blue-400 font-semibold reveal">
+              The $300 Billion Battery Problem
+            </p>
+            <h1
+              class="text-6xl md:text-8xl font-extrabold text-white leading-tight tracking-tight mt-4 reveal"
+              style="transition-delay: 0.1s"
+            >
+              The Universal Battery<span
+                class="block bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent mt-2"
+                >Intellgience Platform.</span
+              >
+            </h1>
+            <p
+              class="mt-8 max-w-4xl mx-auto text-xl md:text-2xl text-slate-300 reveal"
+              style="transition-delay: 0.2s"
+            >
+              ReVolt is the first AI-powered platform that turns chaotic test
+              data into verifiable Digital Passports—unlocking hidden value,
+              reducing risk, and accelerating second-life adoption.
+            </p>
+            <div class="mt-12 reveal" style="transition-delay: 0.3s">
+              <a
+                href="https://revolt-intel.lovable.app/"
+                class="glass-button px-10 py-5 font-bold text-xl text-white rounded-xl transition-all duration-300 transform hover:scale-105 inline-block"
+                id="hero-demo-button"
+                >Launch Live AI Demo &rarr;</a
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- NEW: Pillars Section -->
+        <section id="pillars" class="py-24">
+          <div class="container mx-auto px-6">
+            <div class="text-center max-w-4xl mx-auto">
+              <h2 class="text-5xl md:text-6xl font-extrabold text-white reveal">
+                The Three Pillars of Intelligence
+              </h2>
+              <p
+                class="mt-6 text-xl text-slate-300 reveal"
+                style="transition-delay: 0.1s"
+              >
+                Our platform is founded on a simple, powerful, and transparent
+                workflow to deliver unparalleled clarity.
+              </p>
+            </div>
+            <div class="mt-20 grid md:grid-cols-3 gap-8 text-center">
+              <div class="glass-card reveal" style="transition-delay: 0.2s">
+                <div
+                  class="flex items-center justify-center w-20 h-20 rounded-2xl bg-blue-500/10 mb-8 mx-auto"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-blue-400"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                </div>
+                <h3 class="text-3xl font-bold text-white">
+                  Universal Ingestion
+                </h3>
+                <p class="mt-4 text-lg text-slate-300">
+                  Connect any test hardware or upload any raw data file. Our
+                  universal parser handles hundreds of formats instantly, no
+                  pre-processing required.
+                </p>
+              </div>
+              <div class="glass-card reveal" style="transition-delay: 0.3s">
+                <div
+                  class="flex items-center justify-center w-20 h-20 rounded-2xl bg-cyan-500/10 mb-8 mx-auto"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-cyan-400"
+                  >
+                    <path d="m12 1-9.5 5.5v11L12 23l9.5-5.5v-11L12 1z" />
+                    <path d="m2 6.5 10 5.5 10-5.5" />
+                    <path d="m12 12.5v10.5" />
+                    <path d="M17 4.5v5.5l-5 2.75" />
+                  </svg>
+                </div>
+                <h3 class="text-3xl font-bold text-white">
+                  AI-Powered Analysis
+                </h3>
+                <p class="mt-4 text-lg text-slate-300">
+                  Our core AI models enrich and standardize your data, revealing
+                  degradation modes, forecasting RUL, and flagging anomalies
+                  automatically.
+                </p>
+              </div>
+              <div class="glass-card reveal" style="transition-delay: 0.4s">
+                <div
+                  class="flex items-center justify-center w-20 h-20 rounded-2xl bg-indigo-500/10 mb-8 mx-auto"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-indigo-400"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9.5 14.5 1.5 1.5 3.5-3.5" />
+                  </svg>
+                </div>
+                <h3 class="text-3xl font-bold text-white">
+                  Verifiable Passport
+                </h3>
+                <p class="mt-4 text-lg text-slate-300">
+                  Generate an immutable, regulation-ready Digital Passport for
+                  every battery, creating a trusted asset for compliance,
+                  resale, and financing.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Capabilities Section -->
+        <section id="capabilities" class="py-24 bg-black/20">
+          <div class="container mx-auto px-6">
+            <div class="text-center max-w-4xl mx-auto">
+              <h2 class="text-5xl md:text-6xl font-extrabold text-white reveal">
+                A Unified Command Center for Battery Value
+              </h2>
+              <p
+                class="mt-6 text-xl text-slate-300 reveal"
+                style="transition-delay: 0.1s"
+              >
+                ReVolt is more than a tool; it's an integrated platform for
+                maximizing the performance, safety, and financial return of
+                every battery under your roof.
+              </p>
+            </div>
+            <div class="mt-20 max-w-6xl mx-auto">
+              <div class="grid md:grid-cols-2 gap-x-12 gap-y-10">
+                <div class="space-y-10 reveal" style="transition-delay: 0.2s">
+                  <div class="flex items-start space-x-6">
+                    <div
+                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-blue-400"
+                      >
+                        <path
+                          d="m21.21 15.89-1.21-1.21a2 2 0 0 0-2.83 0l-1.17 1.17a2 2 0 0 1-2.83 0L12 14.7a2 2 0 0 0-2.83 0L8 15.87a2 2 0 0 1-2.83 0L4.01 14.7a2 2 0 0 0-2.83 0L.02 15.87a2 2 0 0 0 0 2.83l1.16 1.16a2 2 0 0 0 2.83 0l1.17-1.17a2 2 0 0 1 2.83 0L9.17 19.83a2 2 0 0 0 2.83 0l1.17-1.17a2 2 0 0 1 2.83 0L17.17 19.83a2 2 0 0 0 2.83 0l1.16-1.16a2 2 0 0 0 0-2.83z"
+                        />
+                        <path
+                          d="m22 12-2.29-2.29a1 1 0 0 0-1.42 0l-1.14 1.14a1 1 0 0 1-1.42 0L14.59 9.7a1 1 0 0 0-1.41 0L12 10.84a1 1 0 0 1-1.41 0L9.44 9.7a1 1 0 0 0-1.41 0L6.88 10.84a1 1 0 0 1-1.42 0l-1.14-1.14a1 1 0 0 0-1.42 0L2 12"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-2xl text-white">
+                        Instantly Diagnose Root Cause
+                      </h4>
+                      <p class="text-lg text-slate-300 mt-2">
+                        Go beyond SoH. Pinpoint the precise degradation
+                        mechanism—lithium plating, SEI growth—to stop guessing
+                        and engineer better cells.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-6">
+                    <div
+                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-blue-400"
+                      >
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        <path d="m9.5 14.5 1.5 1.5 3.5-3.5" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-2xl text-white">
+                        Automate Second-Life Grading
+                      </h4>
+                      <p class="text-lg text-slate-300 mt-2">
+                        Instantly grade any cell (A/B/C/D) based on RUL, safety
+                        flags, and performance history. Make every battery
+                        resale-ready.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-10 reveal" style="transition-delay: 0.3s">
+                  <div class="flex items-start space-x-6">
+                    <div
+                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-blue-400"
+                      >
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path
+                          d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                        />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-2xl text-white">
+                        Generate Bankable Valuations
+                      </h4>
+                      <p class="text-lg text-slate-300 mt-2">
+                        Turn old inventory into capital. Our engine quantifies
+                        remaining energy and generates market-based valuations
+                        for resale or insurance.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-start space-x-6">
+                    <div
+                      class="flex-shrink-0 w-16 h-16 rounded-lg bg-blue-500/10 flex items-center justify-center"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-blue-400"
+                      >
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="8.5" cy="7" r="4" />
+                        <polyline points="17 11 19 13 23 9" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 class="font-bold text-2xl text-white">
+                        Optimize Lab & Test Operations
+                      </h4>
+                      <p class="text-lg text-slate-300 mt-2">
+                        Use the Insights Dashboard to track team throughput,
+                        identify testing bottlenecks, and get AI-driven
+                        recommendations for smarter test protocols.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Process Section -->
+        <section id="process" class="py-32">
+          <div class="container mx-auto px-6">
+            <div class="text-center max-w-4xl mx-auto">
+              <h2 class="text-5xl md:text-6xl font-extrabold text-white reveal">
+                From Raw File to Bankable Asset in 90 Seconds
+              </h2>
+            </div>
+            <!-- Enhanced Process flow with connecting arrows -->
+            <div
+              class="relative mt-24 grid md:grid-cols-3 gap-x-8 gap-y-16 text-center"
+            >
+              <!-- Arrow 1 -->
+              <div
+                class="hidden md:block absolute top-1/2 -translate-y-1/2 left-0 w-full h-full pointer-events-none"
+              >
+                <svg
+                  class="absolute text-slate-700/50"
+                  style="left: 28%; top: -2.5rem"
+                  width="150"
+                  height="150"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M13 17l5-5-5-5" />
+                  <path d="M6 17l5-5-5-5" />
+                </svg>
+              </div>
+              <!-- Arrow 2 -->
+              <div
+                class="hidden md:block absolute top-1/2 -translate-y-1/2 left-0 w-full h-full pointer-events-none"
+              >
+                <svg
+                  class="absolute text-slate-700/50"
+                  style="right: 28%; top: -2.5rem"
+                  width="150"
+                  height="150"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M13 17l5-5-5-5" />
+                  <path d="M6 17l5-5-5-5" />
+                </svg>
+              </div>
+
+              <div
+                class="glass-card p-8 rounded-2xl reveal z-10"
+                style="transition-delay: 0.2s"
+              >
+                <div class="text-8xl font-black mb-6 text-blue-500/30">1</div>
+                <h3 class="text-3xl font-bold text-white">
+                  Drop Your Raw Data
+                </h3>
+                <p class="mt-4 text-lg text-slate-300">
+                  Connect any cycler or drag and drop any file. No cleaning, no
+                  formatting, no CSV hell.
+                </p>
+              </div>
+              <div
+                class="glass-card p-8 rounded-2xl reveal z-10"
+                style="transition-delay: 0.3s"
+              >
+                <div class="text-8xl font-black mb-6 text-blue-500/30">2</div>
+                <h3 class="text-3xl font-bold text-white">
+                  AI Engine Analyzes
+                </h3>
+                <p class="mt-4 text-lg text-slate-300">
+                  Core models instantly parse, standardize, and enrich data with
+                  critical SoH, RUL, and degradation metrics.
+                </p>
+              </div>
+              <div
+                class="glass-card p-8 rounded-2xl reveal z-10"
+                style="transition-delay: 0.4s"
+              >
+                <div class="text-8xl font-black mb-6 text-blue-500/30">3</div>
+                <h3 class="text-3xl font-bold text-white">
+                  Generate Digital Passport
+                </h3>
+                <p class="mt-4 text-lg text-slate-300">
+                  Download a verifiable, regulation-ready passport with a full
+                  audit trail for compliance, resale, or financing.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section id="demo-cta" class="py-24">
+          <div class="container mx-auto px-6 text-center">
+            <div
+              class="relative max-w-4xl mx-auto glass-card p-12 md:p-20 reveal"
+            >
+              <h2 class="text-5xl md:text-6xl font-extrabold text-white">
+                Experience ReVolt Live
+              </h2>
+              <p class="mt-6 max-w-2xl mx-auto text-xl text-slate-300">
+                Stop managing spreadsheets. Start creating value. See how ReVolt
+                can transform your operations in a live, interactive demo.
+              </p>
+              <div class="mt-10">
+                <button
+                  id="final-cta-button"
+                  class="glass-button px-10 py-5 font-bold text-xl text-white rounded-xl transition-all duration-300 transform hover:scale-105 inline-block"
+                >
+                  Launch Free AI Demo
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="py-12 border-t border-white/10 mt-16">
+        <div
+          class="container mx-auto px-6 text-center text-slate-500 text-base"
+        >
+          <p>&copy; 2024 ReVolt Systems Inc. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Modal -->
+    <div id="demo-modal" class="modal-overlay">
+      <div class="modal-content glass-card max-w-lg w-full m-4 text-center">
+        <h3 class="text-3xl font-bold text-white">ReVolt AI Demo</h3>
+        <p class="text-lg text-slate-300 mt-4">
+          The interactive demo will launch in a new window. You can upload a
+          sample data file (or use one of our examples) to see the AI analysis
+          and Digital Passport generation in real time.
+        </p>
+        <div class="mt-8">
+          <a
+            href="https://revolt-intel.lovable.app/"
+            target="_blank"
+            class="block w-full bg-blue-600 text-white font-bold py-4 px-4 rounded-lg hover:bg-blue-500 transition-colors duration-300 text-lg"
+            >Proceed to Live Demo</a
+          >
+          <button
+            id="close-modal-button"
+            class="mt-3 w-full text-slate-400 font-semibold py-3 px-4 rounded-lg hover:bg-white/5 transition-colors duration-300 text-lg"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let scene, camera, renderer, particles;
+
+      function init3D() {
+        const container = document.getElementById("hero-3d-canvas");
+        if (!container || !window.THREE) return;
+
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          1,
+          3000
+        );
+        camera.position.z = 800;
+
+        const numParticles = 15000;
+        const positions = new Float32Array(numParticles * 3);
+        const colors = new Float32Array(numParticles * 3);
+        const sizes = new Float32Array(numParticles);
+        const color = new THREE.Color();
+
+        for (let i = 0; i < positions.length; i += 3) {
+          positions[i] = (Math.random() - 0.5) * 2000;
+          positions[i + 1] = (Math.random() - 0.5) * 2000;
+          positions[i + 2] = (Math.random() - 0.5) * 2000;
+          const mixedColor = color
+            .set(0x3b82f6)
+            .lerp(new THREE.Color(0x06b6d4), Math.random());
+          colors[i] = mixedColor.r;
+          colors[i + 1] = mixedColor.g;
+          colors[i + 2] = mixedColor.b;
+          sizes[i / 3] = Math.random() * 5 + 2;
+        }
+
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(positions, 3)
+        );
+        geometry.setAttribute(
+          "customColor",
+          new THREE.BufferAttribute(colors, 3)
+        );
+        geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+
+        const material = new THREE.ShaderMaterial({
+          uniforms: {
+            pointTexture: {
+              value: new THREE.TextureLoader().load(
+                "https://threejs.org/examples/textures/sprites/spark1.png"
+              ),
+            },
+          },
+          vertexShader: `
+            attribute float size;
+            attribute vec3 customColor;
+            varying vec3 vColor;
+            void main() {
+              vColor = customColor;
+              vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+              gl_PointSize = size * ( 300.0 / -mvPosition.z );
+              gl_Position = projectionMatrix * mvPosition;
+            }`,
+          fragmentShader: `
+            varying vec3 vColor;
+            uniform sampler2D pointTexture;
+            void main() {
+              gl_FragColor = vec4( vColor, 1.0 );
+              gl_FragColor = gl_FragColor * texture2D( pointTexture, gl_PointCoord );
+            }`,
+          blending: THREE.AdditiveBlending,
+          depthTest: false,
+          transparent: true,
+        });
+
+        particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+        window.addEventListener("resize", onWindowResize, false);
+      }
+
+      function onWindowResize() {
+        if (!camera || !renderer) return;
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        if (renderer && scene && camera) render();
+      }
+
+      function render() {
+        const time = Date.now() * 0.0001;
+        if (particles) {
+          particles.rotation.y = time * 0.2;
+          particles.rotation.x = time * 0.1;
+        }
+        renderer.render(scene, camera);
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+
+      // --- Modal Logic ---
+      const modal = document.getElementById("demo-modal");
+      const openModalButtons = [
+        document.getElementById("nav-demo-button"),
+        document.getElementById("hero-demo-button"),
+        document.getElementById("final-cta-button"),
+      ];
+      const closeModalButton = document.getElementById("close-modal-button");
+
+      const openModal = (e) => {
+        e.preventDefault();
+        modal.classList.add("visible");
+      };
+
+      const closeModal = () => {
+        modal.classList.remove("visible");
+      };
+
+      openModalButtons.forEach((btn) =>
+        btn.addEventListener("click", openModal)
+      );
+      closeModalButton.addEventListener("click", closeModal);
+      // Close modal by clicking the overlay
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      // Initialize 3D scene and start animation
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init3D);
+      } else {
+        init3D();
+      }
+      animate();
+    </script>
+  </body>
+</html>
